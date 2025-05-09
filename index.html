@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="bg">
-<head>
-  <meta charset="UTF-8">
-  <title>Качване на файл</title>
-
-  <link rel="icon" href="/files/favicon.ico" />
-
-
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 2rem;
-    }
-    #message {
-      background-color: #d4edda;
-      color: #155724;
-      padding: 10px;
-      margin-bottom: 20px;
-      border: 1px solid #c3e6cb;
-      display: none;
-    }
-  </style>
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>Качване на файл</title>
+  
+    <!-- Content-Security-Policy, който позволява зареждането на изображения от същия домейн -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://www.zadanie.lol;">
+  
+    <link rel="icon" href="/favicon.ico" />
+    
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 2rem;
+      }
+      #message {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #c3e6cb;
+        display: none;
+      }
+    </style>
+  </head>
+  
 <body>
 
   <div id="message">Файлът беше качен успешно!</div>
