@@ -43,7 +43,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
 });
 
 // Статични файлове за учениците (само "public" папката)
-app.use('/files', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(port, () => {
   console.log(`Сървърът работи на http://localhost:${port}`);
