@@ -3,50 +3,37 @@
   <head>
     <meta charset="UTF-8">
     <title>Качване на файл</title>
-  
-    <!-- Content-Security-Policy, който позволява зареждането на изображения от същия домейн -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://www.zadanie.lol;">
-  
+
+    <!-- Настройки за Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://www.zadanie.lol; script-src 'self'; style-src 'self';">
+
+    <!-- Икона на сайта -->
     <link rel="icon" href="/favicon.ico" />
-    
-    <style>
-      body {
-        font-family: sans-serif;
-        margin: 2rem;
-      }
-      #message {
-        background-color: #d4edda;
-        color: #155724;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #c3e6cb;
-        display: none;
-      }
-    </style>
+
+
+    <!-- Връзка към CSS файл от директорията public -->
+    <link rel="stylesheet" href="/styles.css"> <!-- Променен път към styles.css -->
   </head>
+
+  <body>
+
+    <!-- Съобщение за успешно качване -->
+    <div id="message">
+      Файлът беше качен успешно!
+    </div>
   
-<body>
+    <h2>Качи файл до учителя</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" required />
+      <button type="submit">Качи</button>
+    </form>
 
-  <div id="message">Файлът беше качен успешно!</div>
+    <h2>Файлове от учителя:</h2>
+    <ul>
+      <li><a href="/pr1.docx">pr1</a></li>
+    </ul>
 
-  <h2>Качи файл до учителя</h2>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" required />
-    <button type="submit">Качи</button>
-  </form>
-
-  <h2>Файлове от учителя:</h2>
-  <ul>
-    <li><a href="/pr1.docx">pr1</a></li>
-  </ul>
-
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('success') === '1') {
-      document.getElementById('message').style.display = 'block';
-      window.history.replaceState({}, document.title, '/');
-    }
-  </script>
-
-</body>
+    <!-- Връзка към JavaScript файл от директорията public -->
+    <script src="/scripts.js"></script> <!-- Променен път към scripts.js -->
+  </body>
 </html>
