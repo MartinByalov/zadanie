@@ -24,6 +24,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy",
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self';"
+  );
+  next();
+});
+
+
 // Показва HTML формата за качване
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
