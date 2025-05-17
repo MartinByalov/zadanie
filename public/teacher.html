@@ -1,40 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="bg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Dashboard</title>
-    <link rel="stylesheet" href="/css/teacher.css">
-
+  <meta charset="UTF-8">
+  <title>Учителски Панел</title>
+  <link rel="stylesheet" href="/css/teacher.css">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
-
 <body>
-    <div class="logout"><a href="/teacher/logout">Logout</a></div>
-    <h1>Teacher Dashboard</h1>
-    <p>Logged in as: <span id="teacher-email"></span></p>
 
-    <div class="panel">
-        <h2>Upload Teaching Materials</h2>
-        <div class="upload-form">
-            <form action="/teacher/upload" method="post" enctype="multipart/form-data">
-                <input type="file" name="file" required>
-                <br>
-                <input type="submit" value="Upload to Teacher Folder">
-            </form>
-        </div>
+  <div class="logout">
+    <a href="/teacher/logout">Изход</a>
+  </div>
 
-        <h3>Your Materials</h3>
-        <div class="file-grid">
-            <!-- JavaScript will insert teacher files here -->
-        </div>
+  <h1>Добре дошли</h1>
+  <p>Влезли сте като: <strong id="teacher-email"></strong></p>
+
+  <section>
+    <h2>Качване на учебни материали</h2>
+    <form action="/teacher/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" required>
+      <button type="submit">Качи</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Ваши материали</h2>
+    <div class="file-grid">
+      <!-- Injected by server -->
+      <!-- See teacher-route.js, this section is rendered with data -->
     </div>
+  </section>
 
-    <div class="panel">
-        <h2>Student Submissions</h2>
-        <div class="file-grid">
-            <!-- JavaScript will insert student submissions here -->
-        </div>
+  <section>
+    <h2>Предадени задания от ученици</h2>
+    <div class="file-grid">
+      <!-- Injected by server -->
     </div>
+  </section>
+
 </body>
 </html>
