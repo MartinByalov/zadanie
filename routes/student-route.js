@@ -177,7 +177,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /upload — качване на файл в Google Drive
+
+// POST /upload — качване на файл в Google Drive (в папката „Задания“)
 router.post('/upload', upload.single('file'), async (req, res) => {
   const teacherEmail = req.body.teacherEmail;
   if (!teacherEmail) return res.status(400).send('Липсва учителски email');
@@ -185,19 +186,25 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   if (!studentAuth) return res.status(503).send('Качването е временно недостъпно');
 
   try {
+    // Четем от students колекцията, където се пази folderID за заданията
     const docRef = db.collection('students').doc(teacherEmail);
     const docSnap = await docRef.get();
 
-    if (!docSnap.exists) return res.status(404).send('Учителят не е намерен');
+    if (!docSnap.exists) return res.status(404).send('Папка за заданията не е намерена за този учител');
 
     const { folderID } = docSnap.data();
+
     const drive = google.drive({
       version: 'v3',
       auth: await studentAuth.getClient()
     });
 
     const originalName = Buffer.from(req.file.originalname, 'latin1').toString('utf8');
-    const fileMetadata = { name: originalName, parents: [folderID] };
+    const fileMetadata = {
+      name: originalName,
+      parents: [folderID]
+    };
+
     const media = {
       mimeType: req.file.mimetype,
       body: fs.createReadStream(req.file.path)
@@ -205,7 +212,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 
     await drive.files.create({
       resource: fileMetadata,
-      media: media,
+      media,
       fields: 'id,name,webViewLink',
       supportsAllDrives: true
     });
@@ -220,6 +227,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     res.status(500).send('Грешка при качване на файла');
   }
 });
+
 
 // GET /teacher-files — асинхронно зареждане на файлове по email
 router.get('/teacher-files', async (req, res) => {
