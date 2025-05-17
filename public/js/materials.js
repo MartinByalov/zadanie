@@ -82,3 +82,13 @@ function loadMaterials({
     setInterval(fetchAndRender, autoRefreshInterval);
   }
 }
+
+// Вземи teacher email от URL параметър например
+const urlParams = new URLSearchParams(window.location.search);
+const teacherId = urlParams.get('teacher') || 'default@domain.com';
+
+loadMaterials({
+  url: `/teacher-files?teacher=${encodeURIComponent(teacherId)}`,
+  teacherContainerId: 'teacherFilesContainer',
+  studentContainerId: 'studentFilesContainer'
+});

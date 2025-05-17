@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Учителски Панел</title>
-  <link rel="stylesheet" href="/css/teacher.css">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/css/teacher.css" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 
@@ -13,30 +13,45 @@
   </div>
 
   <h1>Добре дошли</h1>
-  <p>Влезли сте като: <strong id="teacher-email"></strong></p>
+  <!-- Тук сървърът трябва да вкара реалния email на учителя -->
+  <p>Влезли сте като: <strong id="teacher-email"><%= teacherEmail %></strong></p>
 
   <section>
     <h2>Качване на учебни материали</h2>
     <form action="/teacher/upload" method="post" enctype="multipart/form-data">
-      <input type="file" name="file" required>
+      <input type="file" name="file" required />
       <button type="submit">Качи</button>
     </form>
   </section>
 
   <section>
     <h2>Ваши материали</h2>
-    <div class="file-grid">
-      <!-- Injected by server -->
-      <!-- See teacher-route.js, this section is rendered with data -->
+    <div id="teacherFilesContainer" class="file-grid">
+      <!-- Тук ще се зареждат файловете на учителя чрез JS -->
     </div>
   </section>
 
   <section>
     <h2>Предадени задания от ученици</h2>
-    <div class="file-grid">
-      <!-- Injected by server -->
+    <div id="studentFilesContainer" class="file-grid">
+      <!-- Тук ще се зареждат ученическите файлове -->
     </div>
   </section>
+
+  <script type="module">
+    import { loadMaterials } from '/js/materials.js';
+
+    // Взимаме email-а от елемента
+    const teacherEmail = document.getElementById('teacher-email').textContent.trim();
+
+    // Стартираме зареждането на материали само за този учител
+    loadMaterials({
+      url: `/teacher-files?teacher=${encodeURIComponent(teacherEmail)}`,
+      teacherContainerId: 'teacherFilesContainer',
+      studentContainerId: 'studentFilesContainer',
+      autoRefreshInterval: 30000 // презарежда на всеки 30 секунди (по избор)
+    });
+  </script>
 
 </body>
 </html>
