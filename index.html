@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Assignment Upload</title>
+    <link rel="stylesheet" href="/css/student.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Student Assignment Upload</h1>
+            <a href="/teacher" class="teacher-login">Teacher Login</a>
+        </header>
+
+        <div class="upload-section">
+            <h2>Upload Your Assignment</h2>
+            <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" id="fileInput" required>
+                <button type="submit" class="upload-btn">Upload</button>
+            </form>
+            <div id="uploadStatus"></div>
+        </div>
+
+        <div class="materials-section">
+            <h2 id="teacherFilesTitle">Файлове от учител: ${teachers[0].name}</h2>
+
+            <div id="teacherCards" class="teacher-cards">
+                <!-- Cards will be injected here dynamically -->
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+  window.env = {
+    FIREBASE_API_KEY: "{{FIREBASE_API_KEY}}",
+    FIREBASE_AUTH_DOMAIN: "{{FIREBASE_AUTH_DOMAIN}}",
+    FIREBASE_PROJECT_ID: "{{FIREBASE_PROJECT_ID}}"
+  };
+</script>
+
+<script type="module" src="/js/teachers.js"></script>
+
+</body>
+
+</html>

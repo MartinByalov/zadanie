@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="/css/teacher.css">
+
+</head>
+
+<body>
+    <div class="logout"><a href="/teacher/logout">Logout</a></div>
+    <h1>Teacher Dashboard</h1>
+    <p>Logged in as: <span id="teacher-email"></span></p>
+
+    <div class="panel">
+        <h2>Upload Teaching Materials</h2>
+        <div class="upload-form">
+            <form action="/teacher/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" required>
+                <br>
+                <input type="submit" value="Upload to Teacher Folder">
+            </form>
+        </div>
+
+        <h3>Your Materials</h3>
+        <div class="file-grid">
+            <!-- JavaScript will insert teacher files here -->
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>Student Submissions</h2>
+        <div class="file-grid">
+            <!-- JavaScript will insert student submissions here -->
+        </div>
+    </div>
+</body>
+</html>

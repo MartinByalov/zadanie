@@ -1,0 +1,108 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.panel {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.file-card {
+  background: white;
+  padding: 15px;
+  border-radius: 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.file-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.file-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.file-name {
+  font-weight: bold;
+}
+
+.file-date {
+  color: #666;
+  font-size: 0.8em;
+}
+
+.upload-form {
+  background: #f0f8ff;
+  padding: 20px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.logout {
+  float: right;
+}
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.file-card {
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.file-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.file-name {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 6px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* максимум 2 реда */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  max-height: 3em;
+}
+
+.file-date {
+  font-size: 12px;
+  color: #666;
+}

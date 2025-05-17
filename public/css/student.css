@@ -1,0 +1,214 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+h1, h2 {
+    color: #2c3e50;
+}
+
+.teacher-login {
+    background: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.teacher-login:hover {
+    background: #2980b9;
+}
+
+.upload-section {
+    background: #e8f4fc;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#uploadForm {
+    margin-top: 15px;
+}
+
+#fileInput {
+    display: block;
+    margin-bottom: 15px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.upload-btn {
+    background: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.upload-btn:hover {
+    background: #27ae60;
+}
+
+#uploadStatus {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.materials-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.materials-list {
+    margin-top: 15px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.file-link {
+    color: #3498db;
+    text-decoration: none;
+    flex-grow: 1;
+}
+
+.file-link:hover {
+    text-decoration: underline;
+}
+
+.file-date {
+    color: #7f8c8d;
+    font-size: 0.85em;
+}
+
+.teacher-cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.teacher-card {
+  width: 250px;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.teacher-card.inactive {
+  background-color: #f0f0f0;
+  filter: grayscale(100%) blur(1px);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.teacher-card.active {
+  background-color: #d6fcd6;
+  filter: none;
+  pointer-events: auto;
+}
+
+.teacher-card h3 {
+  margin: 10px 0 5px;
+}
+
+.teacher-card p {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.teacher-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.material-item {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.material-item img.file-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.material-item a {
+  font-weight: 600;
+  font-size: 14px;
+  color: #2a2a2a;
+  margin-bottom: 6px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* максимум 2 реда */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  max-height: 3em;
+  text-decoration: none;
+}
+
+.material-item a:hover {
+  color: #3498db;
+  text-decoration: underline;
+}
+
+.material-item .file-date {
+  font-size: 12px;
+  color: #666;
+}
