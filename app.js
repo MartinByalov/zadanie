@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const FirestoreStore = require('firestore-store')(session);
-const dotenv = require('dotenv');
 const path = require('path');
 
 const admin = require('firebase-admin');
@@ -18,40 +17,38 @@ if (process.env.FIREBASE_KEY_JSON) {
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
-  
+
 const db = admin.firestore();
- 
 const app = express();
-const PORT = process.env.PORT || 3000; 
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const firestore = admin.firestore();
-
+// ✅ Firestore-based session store
 app.use(session({
   secret: process.env.SESSION_SECRET,
   store: new FirestoreStore({
-    dataset: firestore,  // твоят Firestore клиент
-    kind: 'express-sessions' // име на колекцията за сесиите в Firestore
+    database: db,                     // 🔧 Тук беше грешката (трябва "database", не "dataset")
+    collection: 'sessions'            // 🔧 А не "kind"
   }),
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // true само в продукция
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
   }
 }));
 
-// Add this before your routes
+// Debugging middleware
 app.use((req, res, next) => {
   console.log('Session ID:', req.sessionID);
   console.log('Session data:', req.session);
   next();
 });
-  
+
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -74,4 +71,4 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Нещо се обърка!');
-}); 
+});

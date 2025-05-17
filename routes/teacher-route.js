@@ -9,8 +9,6 @@ const { studentDrive } = require('../config/googleAuth');
 const ALLOWED_TEACHERS = process.env.ALLOWED_TEACHERS.split(',');
 const { saveRefreshToken } = require('../services/token-service');
 
-
-
 const router = express.Router();
 
 const oauth2Client = new google.auth.OAuth2(
