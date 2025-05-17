@@ -32,10 +32,11 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: { 
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    secure: process.env.NODE_ENV === 'production' && process.env.USE_HTTPS === 'true', 
+    maxAge: 24 * 60 * 60 * 1000 // 24 часа
   }
 }));
+
  
 // Add this before your routes
 app.use((req, res, next) => {
