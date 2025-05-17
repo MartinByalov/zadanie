@@ -11,12 +11,13 @@ const router = express.Router();
 const { initializeApp, applicationDefault } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 
+// Инициализация на Firebase Admin SDK
 if (!admin.apps.length) {
   initializeApp({ credential: applicationDefault() });
 }
 const db = getFirestore();
 
-// Google Drive Auth
+// Google Drive конфигурация
 const SERVICE_ACCOUNT_PATH = path.join(__dirname, '..', 'service-account.json');
 let studentAuth;
 if (fs.existsSync(SERVICE_ACCOUNT_PATH)) {
@@ -28,7 +29,7 @@ if (fs.existsSync(SERVICE_ACCOUNT_PATH)) {
   console.warn('Service account file not found. Student uploads will be disabled.');
 }
 
-// Multer
+// Конфигурация на Multer за качване на файлове
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
@@ -47,10 +48,9 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 
-// GET /
+// GET / — начална страница със списък на учители и файлове
 router.get('/', async (req, res) => {
   try {
-    // Вземаме списъка с учители от колекцията "teachers", които са активни
     const teachersSnapshot = await db.collection('teachers')
       .where('active', '==', true)
       .get();
@@ -79,6 +79,7 @@ router.get('/', async (req, res) => {
 
     const teacherFiles = response.data.files;
 
+    // HTML страница
     res.send(`
       <!DOCTYPE html>
       <html lang="bg">
@@ -176,45 +177,27 @@ router.get('/', async (req, res) => {
   }
 });
 
-
-// POST /upload
-// Качване на файл в Google Drive
+// POST /upload — качване на файл в Google Drive
 router.post('/upload', upload.single('file'), async (req, res) => {
-  const teacherEmail = req.body.teacherEmail; // <-- fix от query към body
-  if (!teacherEmail) {
-    return res.status(400).send('Липсва учителски email');
-  }
-
-  if (!req.file) {
-    return res.status(400).send('Моля, изберете файл за качване');
-  }
-
-  if (!studentAuth) {
-    return res.status(503).send('Качването е временно недостъпно');
-  }
+  const teacherEmail = req.body.teacherEmail;
+  if (!teacherEmail) return res.status(400).send('Липсва учителски email');
+  if (!req.file) return res.status(400).send('Моля, изберете файл за качване');
+  if (!studentAuth) return res.status(503).send('Качването е временно недостъпно');
 
   try {
     const docRef = db.collection('teachers').doc(teacherEmail);
     const docSnap = await docRef.get();
 
-    if (!docSnap.exists) {
-      return res.status(404).send('Учителят не е намерен');
-    }
+    if (!docSnap.exists) return res.status(404).send('Учителят не е намерен');
 
     const { folderID } = docSnap.data();
-
     const drive = google.drive({
       version: 'v3',
       auth: await studentAuth.getClient()
     });
 
     const originalName = Buffer.from(req.file.originalname, 'latin1').toString('utf8');
-
-    const fileMetadata = {
-      name: originalName,
-      parents: [folderID]
-    };
-
+    const fileMetadata = { name: originalName, parents: [folderID] };
     const media = {
       mimeType: req.file.mimetype,
       body: fs.createReadStream(req.file.path)
@@ -228,10 +211,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     });
 
     fs.unlinkSync(req.file.path);
-
-    // ✅ Пренасочване обратно към началната страница
     res.redirect('/');
-
   } catch (error) {
     console.error('Грешка при качване:', error);
     if (req.file?.path && fs.existsSync(req.file.path)) {
@@ -241,8 +221,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-
-// GET /teacher-files
+// GET /teacher-files — асинхронно зареждане на файлове по email
 router.get('/teacher-files', async (req, res) => {
   const email = req.query.teacherEmail;
   if (!email) return res.status(400).json({ error: 'Липсва email' });
