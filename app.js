@@ -26,6 +26,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.set('trust proxy', 1); // ако си зад 1 reverse proxy като NGINX
+
 // ✅ Firestore-based session store
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -36,9 +38,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: true,
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
+    sameSite: 'lax'
   }
 }));
 
