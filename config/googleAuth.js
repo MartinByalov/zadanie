@@ -1,6 +1,7 @@
 const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
+const admin = require('firebase-admin');
 require('dotenv').config();
 
 // OAuth2 конфигурация за учители
@@ -33,6 +34,16 @@ if (fs.existsSync(serviceAccountPath)) {
   console.warn('Service account file not found. Student uploads will be disabled.');
 }
 
+// Инициализация на Firestore
+let firestore = null;
+if (!admin.apps.length && fs.existsSync(serviceAccountPath)) {
+  const serviceAccount = require(serviceAccountPath);
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+  firestore = admin.firestore();
+}
+
 // Инициализация на Drive API
 const teacherDrive = google.drive({
   version: 'v3',
@@ -50,6 +61,7 @@ module.exports = {
   oauth2Client,
   teacherDrive,
   studentDrive,
+  firestore,
   SCOPES: [
     'https://www.googleapis.com/auth/drive.file',
     'https://www.googleapis.com/auth/userinfo.email',
