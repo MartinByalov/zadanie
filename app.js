@@ -31,13 +31,13 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { 
-    secure: process.env.NODE_ENV === 'production' && process.env.USE_HTTPS === 'true', 
-    maxAge: 24 * 60 * 60 * 1000 // 24 часа
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // в продукция true, за тест false
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
   }
 }));
 
- 
 // Add this before your routes
 app.use((req, res, next) => {
   console.log('Session ID:', req.sessionID);
