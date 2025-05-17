@@ -29,7 +29,7 @@ if (fs.existsSync(SERVICE_ACCOUNT_PATH)) {
   console.warn('Service account file not found. Student uploads will be disabled.');
 }
 
-// Конфигурация на Multer за качване на файлове
+// Multer конфигурация
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
@@ -48,7 +48,7 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 
-// GET / — начална страница със списък на учители и файлове
+// GET / — начална страница със списък учители и файлове от папката Учител на първия учител
 router.get('/', async (req, res) => {
   try {
     const teachersSnapshot = await db.collection('teachers')
@@ -79,7 +79,6 @@ router.get('/', async (req, res) => {
 
     const teacherFiles = response.data.files;
 
-    // HTML страница
     res.send(`
       <!DOCTYPE html>
       <html lang="bg">
@@ -152,16 +151,13 @@ router.get('/', async (req, res) => {
                 return;
               }
 
-              teacherCards.innerHTML = files.map(function(file) {
-                return (
-                  '<div class="material-item">' +
-                    '<img src="' + file.iconLink + '" class="file-icon" alt="File icon" />' +
-                    '<a href="' + file.webViewLink + '" target="_blank">' + file.name + '</a>' +
-                    '<span class="file-date">' + new Date(file.modifiedTime).toLocaleString() + '</span>' +
-                  '</div>'
-                );
-              }).join('');
-
+              teacherCards.innerHTML = files.map(file => \`
+                <div class="material-item">
+                  <img src="\${file.iconLink}" class="file-icon" alt="File icon" />
+                  <a href="\${file.webViewLink}" target="_blank">\${file.name}</a>
+                  <span class="file-date">\${new Date(file.modifiedTime).toLocaleString()}</span>
+                </div>
+              \`).join('');
             } catch (err) {
               teacherCards.innerHTML = '<p>Грешка при зареждане на файловете.</p>';
               console.error(err);
@@ -177,8 +173,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-
-// POST /upload — качване на файл в Google Drive (в папката „Задания“)
+// POST /upload — качване на задание в папката Задания (students)
 router.post('/upload', upload.single('file'), async (req, res) => {
   const teacherEmail = req.body.teacherEmail;
   if (!teacherEmail) return res.status(400).send('Липсва учителски email');
@@ -186,7 +181,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   if (!studentAuth) return res.status(503).send('Качването е временно недостъпно');
 
   try {
-    // Четем от students колекцията, където се пази folderID за заданията
+    // Взимаме folderID от students колекцията по teacherEmail
     const docRef = db.collection('students').doc(teacherEmail);
     const docSnap = await docRef.get();
 
@@ -228,21 +223,20 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-
-// GET /teacher-files — асинхронно зареждане на файлове по email
+// GET /teacher-files — зареждане на файлове от папката Учител
 router.get('/teacher-files', async (req, res) => {
   const email = req.query.teacherEmail;
   if (!email) return res.status(400).json({ error: 'Липсва email' });
 
   try {
-    const snapshot = await db.collection('teachers')
-      .where('email', '==', email)
-      .limit(1)
-      .get();
+    // Взимаме директно doc по email (id)
+    const docRef = db.collection('teachers').doc(email);
+    const docSnap = await docRef.get();
 
-    if (snapshot.empty) return res.status(404).json({ error: 'Учителят не е намерен' });
+    if (!docSnap.exists) return res.status(404).json({ error: 'Учителят не е намерен' });
 
-    const { folderID } = snapshot.docs[0].data();
+    const { folderID } = docSnap.data();
+
     const auth = await studentAuth.getClient();
     const drive = google.drive({ version: 'v3', auth });
 
