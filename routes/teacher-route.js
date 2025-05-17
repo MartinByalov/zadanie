@@ -1,13 +1,12 @@
-
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const { google } = require('googleapis');
 const fs = require('fs');
 const requireTeacher = require('../middleware/requireTeacher');
-const { studentDrive } = require('../config/googleAuth');
+const { studentDrive, firestore } = require('../config/googleAuth'); // Добавих firestore
 const ALLOWED_TEACHERS = process.env.ALLOWED_TEACHERS.split(',');
-const { saveRefreshToken } = require('../services/token-service');
+const { saveRefreshToken, getRefreshToken } = require('../services/token-service');
 
 const router = express.Router();
 
@@ -22,7 +21,6 @@ const scopes = [
   'https://www.googleapis.com/auth/drive.file'
 ];
 
-const TEACHER_FOLDER_ID = process.env.TEACHER_FOLDER_ID;
 const STUDENT_FOLDER_ID = process.env.STUDENT_FOLDER_ID;
 
 // Configure uploads directory
@@ -41,8 +39,18 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 
-// Teacher Dashboard
-const { getRefreshToken } = require('../services/token-service');
+// Helper функция за вземане на folderID на учителя от Firestore
+async function getTeacherFolderID(email) {
+  const doc = await firestore.collection('teachers').doc(email).get();
+  if (!doc.exists) {
+    throw new Error(`Teacher folder not found for email: ${email}`);
+  }
+  const data = doc.data();
+  if (!data.folderID) {
+    throw new Error(`folderID field missing for teacher ${email}`);
+  }
+  return data.folderID;
+}
 
 router.get('/', requireTeacher, async (req, res) => {
   try {
@@ -52,7 +60,6 @@ router.get('/', requireTeacher, async (req, res) => {
     const refreshToken = await getRefreshToken(email);
 
     if (refreshToken) {
-      // Сложи refresh token + други токени от сесията, ако има
       oauth2Client.setCredentials({
         refresh_token: refreshToken,
         access_token: req.session.teacher.tokens.access_token,
@@ -61,9 +68,11 @@ router.get('/', requireTeacher, async (req, res) => {
         expiry_date: req.session.teacher.tokens.expiry_date
       });
     } else {
-      // fallback - използвай токена от сесията
       oauth2Client.setCredentials(req.session.teacher.tokens);
     }
+
+    // Вземи папката на учителя от Firestore
+    const TEACHER_FOLDER_ID = await getTeacherFolderID(email);
 
     const drive = google.drive({
       version: 'v3',
@@ -71,7 +80,7 @@ router.get('/', requireTeacher, async (req, res) => {
       params: { supportsAllDrives: true, includeItemsFromAllDrives: true }
     });
 
-    // Get teacher files
+    // Вземи файловете на учителя
     const teacherFiles = await drive.files.list({
       q: `'${TEACHER_FOLDER_ID}' in parents and trashed = false`,
       fields: 'files(id,name,webViewLink,iconLink,modifiedTime)',
@@ -79,7 +88,7 @@ router.get('/', requireTeacher, async (req, res) => {
       pageSize: 10
     });
 
-    // Get student files via service account
+    // Вземи студентските файлове чрез service account
     let studentFiles = [];
     try {
       const response = await studentDrive.files.list({
@@ -93,7 +102,7 @@ router.get('/', requireTeacher, async (req, res) => {
       console.error('Error fetching student files:', err.message);
     }
 
-    // Render the dashboard
+    // Рендериране на дашборда (без промени)
     res.send(`
 <!DOCTYPE html>
 <html lang="en">
@@ -161,7 +170,7 @@ router.get('/', requireTeacher, async (req, res) => {
   }
 });
 
-// Login Initiation
+// Login Initiation (без промяна)
 router.get('/login', (req, res) => {
   req.session.redirectTo = req.query.redirectTo || '/teacher';
   const authUrl = oauth2Client.generateAuthUrl({
@@ -171,7 +180,7 @@ router.get('/login', (req, res) => {
   res.redirect(authUrl);
 });
 
-// OAuth Callback
+// OAuth Callback (без промяна)
 router.get('/oauth2callback', async (req, res) => {
   const { code, error } = req.query;
 
@@ -226,13 +235,18 @@ router.get('/oauth2callback', async (req, res) => {
   }
 });
 
-// File Upload to Google Drive
+// File Upload to Google Drive - редакция за папката от Firestore
 router.post('/upload', requireTeacher, upload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).send('Please select a file');
   }
 
   try {
+    const email = req.session.teacher.email;
+
+    // Вземи папката на учителя от Firestore
+    const TEACHER_FOLDER_ID = await getTeacherFolderID(email);
+
     oauth2Client.setCredentials(req.session.teacher.tokens);
     const drive = google.drive({
       version: 'v3',
@@ -261,7 +275,7 @@ router.post('/upload', requireTeacher, upload.single('file'), async (req, res) =
 
     fs.unlinkSync(req.file.path);
 
-    res.redirect('/teacher'); // Redirect to the dashboard after upload
+    res.redirect('/teacher');
 
   } catch (error) {
     console.error('Upload error:', error);
@@ -274,12 +288,12 @@ router.post('/upload', requireTeacher, upload.single('file'), async (req, res) =
   }
 });
 
-// User Info
+// User Info (без промяна)
 router.get('/user', requireTeacher, (req, res) => {
   res.json({ user: req.session.teacher });
 });
 
-// Logout
+// Logout (без промяна)
 router.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/');
@@ -287,5 +301,3 @@ router.get('/logout', (req, res) => {
 });
 
 module.exports = router;
-
-
