@@ -1,13 +1,3 @@
-const express = require('express');
-const path = require('path');
-const multer = require('multer');
-const { google } = require('googleapis');
-const fs = require('fs');
-const requireTeacher = require('../middleware/requireTeacher');
-const { studentDrive, firestore } = require('../config/googleAuth'); // Добавих firestore
-const ALLOWED_TEACHERS = process.env.ALLOWED_TEACHERS.split(',');
-const { saveRefreshToken, getRefreshToken } = require('../services/token-service');
-
 const admin = require('firebase-admin');
 const { initializeApp, applicationDefault } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -17,6 +7,18 @@ if (!admin.apps.length) {
 }
 
 const db = getFirestore();
+console.log('Firestore initialized:', db ? 'OK' : 'NO');
+
+
+const express = require('express');
+const path = require('path');
+const multer = require('multer');
+const { google } = require('googleapis');
+const fs = require('fs');
+const requireTeacher = require('../middleware/requireTeacher');
+const { studentDrive } = require('../config/googleAuth'); // Добавих firestore
+const ALLOWED_TEACHERS = process.env.ALLOWED_TEACHERS.split(',');
+const { saveRefreshToken, getRefreshToken } = require('../services/token-service');
 
 
 /*
@@ -59,15 +61,18 @@ const upload = multer({
 
 // Helper функция за вземане на folderID на учителя от Firestore
 async function getTeacherFolderID(email) {
-  const doc = await firestore.collection('teachers').doc(email).get();
-  if (!doc.exists) {
-    throw new Error(`Teacher folder not found for email: ${email}`);
+
+ console.log('getTeacherFolderID called with email:', email);
+  console.log('db:', db);
+
+  const docRef = db.collection('teachers').doc(email);
+  const docSnap = await docRef.get();
+
+  if (!docSnap.exists) {
+    throw new Error('Teacher not found');
   }
-  const data = doc.data();
-  if (!data.folderID) {
-    throw new Error(`folderID field missing for teacher ${email}`);
-  }
-  return data.folderID;
+
+  return docSnap.data().folderID;
 }
 
 router.get('/', requireTeacher, async (req, res) => {
