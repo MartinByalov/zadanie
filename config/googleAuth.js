@@ -1,19 +1,18 @@
 const { google } = require('googleapis');
-const fs = require('fs');
-const path = require('path');
 const admin = require('firebase-admin');
 require('dotenv').config();
 
-// OAuth2 конфигурация за учители
+// ===== OAuth2 конфигурация за учители =====
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
   process.env.GOOGLE_REDIRECT_URI
 );
 
-// Зареждане на refresh token (ако съществува)
+// Зареждане на refresh token от файл (ако съществува локално)
 try {
-  const refreshTokenPath = path.join(__dirname, '..', 'refresh-token.txt');
+  const refreshTokenPath = require('path').join(__dirname, '..', 'refresh-token.txt');
+  const fs = require('fs');
   if (fs.existsSync(refreshTokenPath)) {
     const refreshToken = fs.readFileSync(refreshTokenPath, 'utf8').trim();
     oauth2Client.setCredentials({ refresh_token: refreshToken });
@@ -22,29 +21,35 @@ try {
   console.warn('Failed to load refresh token:', err.message);
 }
 
-// Service account конфигурация за ученици
-let studentAuth;
-const serviceAccountPath = path.join(__dirname, '..', 'service-account.json');
-if (fs.existsSync(serviceAccountPath)) {
+// ===== Service Account конфигурация за ученици =====
+let studentAuth = null;
+let firestore = null;
+
+try {
+  if (!process.env.SERVICE_ACCOUNT_JSON) {
+    throw new Error('SERVICE_ACCOUNT_JSON is not defined in environment');
+  }
+
+  const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
+
+  // Инициализация на GoogleAuth за ученически Drive
   studentAuth = new google.auth.GoogleAuth({
-    keyFile: serviceAccountPath,
+    credentials: serviceAccount,
     scopes: ['https://www.googleapis.com/auth/drive']
   });
-} else {
-  console.warn('Service account file not found. Student uploads will be disabled.');
+
+  // Инициализация на Firestore
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    firestore = admin.firestore();
+  }
+} catch (err) {
+  console.warn('Service Account config failed:', err.message);
 }
 
-// Инициализация на Firestore
-let firestore = null;
-if (!admin.apps.length && fs.existsSync(serviceAccountPath)) {
-  const serviceAccount = require(serviceAccountPath);
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-  firestore = admin.firestore();
-}
-
-// Инициализация на Drive API
+// ===== Инициализация на Drive API =====
 const teacherDrive = google.drive({
   version: 'v3',
   auth: oauth2Client,
