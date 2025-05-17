@@ -8,6 +8,16 @@ const { studentDrive, firestore } = require('../config/googleAuth'); // Доба
 const ALLOWED_TEACHERS = process.env.ALLOWED_TEACHERS.split(',');
 const { saveRefreshToken, getRefreshToken } = require('../services/token-service');
 
+const admin = require('firebase-admin');
+const { initializeApp, applicationDefault } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
+
+if (!admin.apps.length) {
+  initializeApp({ credential: applicationDefault() });
+}
+
+const db = getFirestore();
+
 
 /*
 const json = fs.readFileSync('service-account.json', 'utf8');
