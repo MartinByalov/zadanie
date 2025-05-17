@@ -9,6 +9,13 @@ const ALLOWED_TEACHERS = process.env.ALLOWED_TEACHERS.split(',');
 const { saveRefreshToken, getRefreshToken } = require('../services/token-service');
 
 
+/*
+const json = fs.readFileSync('service-account.json', 'utf8');
+const oneLineJson = JSON.stringify(JSON.parse(json));
+
+console.log(oneLineJson);
+*/
+
 const router = express.Router();
 
 const oauth2Client = new google.auth.OAuth2(
