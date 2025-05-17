@@ -185,7 +185,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   if (!studentAuth) return res.status(503).send('Качването е временно недостъпно');
 
   try {
-    const docRef = db.collection('teachers').doc(teacherEmail);
+    const docRef = db.collection('students').doc(teacherEmail);
     const docSnap = await docRef.get();
 
     if (!docSnap.exists) return res.status(404).send('Учителят не е намерен');
