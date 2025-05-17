@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const session = require('express-session');
+const FirestoreStore = require('firestore-store')(session);
 const dotenv = require('dotenv');
 const path = require('path');
 
@@ -27,12 +28,18 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const firestore = admin.firestore();
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
+  store: new FirestoreStore({
+    dataset: firestore,  // твоят Firestore клиент
+    kind: 'express-sessions' // име на колекцията за сесиите в Firestore
+  }),
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // в продукция true, за тест false
+    secure: process.env.NODE_ENV === 'production', // true само в продукция
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
   }
