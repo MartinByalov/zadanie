@@ -7,6 +7,13 @@ const serviceAccountJson = process.env.SERVICE_ACCOUNT_JSON;
 let firestore = null;
 let studentAuth = null;
 
+// Създаване на OAuth2 клиент за учители
+const oauth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URI
+);
+
 // Инициализация на Firebase Admin SDK от JSON стринг (без файл)
 if (serviceAccountJson) {
   try {
@@ -32,13 +39,6 @@ if (serviceAccountJson) {
 } else {
   console.warn('SERVICE_ACCOUNT_JSON environment variable not found. Student uploads disabled.');
 }
-
-// OAuth2 конфигурация за учители
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI
-);
 
 // Зареждане на refresh token (ако съществува)
 try {
@@ -70,14 +70,8 @@ const studentDrive = studentAuth
   : null;
 
 module.exports = {
-  oauth2Client,
+  firestore,
   teacherDrive,
   studentDrive,
-  firestore,
-  SCOPES: [
-    'https://www.googleapis.com/auth/drive.file',
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'openid'
-  ]
+  oauth2Client
 };
