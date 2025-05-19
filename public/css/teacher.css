@@ -106,3 +106,13 @@ a {
   font-size: 12px;
   color: #666;
 }
+
+/* Икони по файлов тип (Font Awesome) */
+.fa-file-pdf { color: #e74c3c; }
+.fa-file-word { color: #2980b9; }
+.fa-file-excel { color: #27ae60; }
+.fa-file-powerpoint { color: #d35400; }
+.fa-file-image { color: #8e44ad; }
+.fa-file-video { color: #c0392b; }
+.fa-file-audio { color: #16a085; }
+.fa-file-archive { color: #7f8c8d; }

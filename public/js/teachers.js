@@ -54,5 +54,5 @@ async function loadTeachers() {
     }
 }
 
-// 4. Стартиране при зареждане на страницата
 document.addEventListener('DOMContentLoaded', loadTeachers);
+

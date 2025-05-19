@@ -1,142 +1,105 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
 h1, h2 {
-    color: #2c3e50;
+  color: #2c3e50;
 }
 
-.teacher-login {
-    background: #3498db;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: 500;
+/* Бутон стилове */
+.btn-primary, .teacher-login {
+  background: #3498db;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
 }
 
-.teacher-login:hover {
-    background: #2980b9;
+.btn-primary:hover, .teacher-login:hover {
+  background: #2980b9;
 }
 
-.upload-section {
-    background: #e8f4fc;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+/* Секции с фон */
+.upload-section, .materials-section, .panel, .upload-form {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
 }
 
+/* Формуляр за качване */
 #uploadForm {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 #fileInput {
-    display: block;
-    margin-bottom: 15px;
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+  display: block;
+  margin-bottom: 15px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
+/* Качване бутон */
 .upload-btn {
-    background: #2ecc71;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
+  background: #2ecc71;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 .upload-btn:hover {
-    background: #27ae60;
+  background: #27ae60;
 }
 
 #uploadStatus {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 4px;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 4px;
 }
 
-.materials-section {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.materials-list {
-    margin-top: 15px;
-}
-
-.file-item {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-}
-
-.file-item:last-child {
-    border-bottom: none;
-}
-
-.file-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-}
-
-.file-link {
-    color: #3498db;
-    text-decoration: none;
-    flex-grow: 1;
-}
-
-.file-link:hover {
-    text-decoration: underline;
-}
-
-.file-date {
-    color: #7f8c8d;
-    font-size: 0.85em;
-}
-
-.teacher-cards {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
+/* Карти за учители и материали */
+.teacher-cards, .material-item, .file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
   margin-top: 20px;
 }
 
-.teacher-card {
-  width: 250px;
-  padding: 20px;
-  border-radius: 12px;
+.teacher-card, .material-item, .file-card {
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
   cursor: pointer;
+  transition: background-color 0.3s, filter 0.3s, opacity 0.3s;
 }
 
 .teacher-card.inactive {
@@ -154,6 +117,8 @@ h1, h2 {
 
 .teacher-card h3 {
   margin: 10px 0 5px;
+  font-weight: 600;
+  color: #2c3e50;
 }
 
 .teacher-card p {
@@ -161,38 +126,17 @@ h1, h2 {
   color: #555;
 }
 
-.teacher-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 16px;
-  margin-top: 20px;
-}
-
-.material-item {
-  background: white;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-}
-
-.material-item img.file-icon {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
+/* Материалите */
+.material-item i.fas {
+  font-size: 48px;
+  color: #3498db;
   margin-bottom: 10px;
 }
 
-.material-item a {
-  font-weight: 600;
+.material-item a, .file-name {
+  font-weight: bold;
   font-size: 14px;
-  color: #2a2a2a;
   margin-bottom: 6px;
-
   display: -webkit-box;
   -webkit-line-clamp: 2; /* максимум 2 реда */
   -webkit-box-orient: vertical;
@@ -200,6 +144,7 @@ h1, h2 {
   text-overflow: ellipsis;
   word-break: break-word;
   max-height: 3em;
+  color: #1a73e8;
   text-decoration: none;
 }
 
@@ -208,7 +153,113 @@ h1, h2 {
   text-decoration: underline;
 }
 
-.material-item .file-date {
+/* Дати */
+.material-item .file-date, .file-date {
   font-size: 12px;
   color: #666;
+}
+
+/* Икони за файлове */
+.file-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.file-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.file-icon.small {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.file-name {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+/* Font Awesome икони по типове файлове */
+.fa-file-pdf { color: #e74c3c; }
+.fa-file-word { color: #2980b9; }
+.fa-file-excel { color: #27ae60; }
+.fa-file-powerpoint { color: #d35400; }
+.fa-file-image { color: #8e44ad; }
+.fa-file-video { color: #c0392b; }
+.fa-file-audio { color: #16a085; }
+.fa-file-archive { color: #7f8c8d; }
+
+/* Logout бутон */
+.logout {
+  float: right;
+}
+
+/* Drag and Drop форма */
+.form {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border: 3px dashed grey;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.form div {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  line-height: 170px;
+  color: black;
+  font-family: Arial, sans-serif;
+  position: absolute;
+  top: 10%;
+  z-index: 1;
+  user-select: none;
+}
+
+.form input {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.form button {
+  border-radius: 10px;
+  padding: 10px 20px;
+  background: #1950A3;
+  outline: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.form div img {
+  position: relative;
+  top: 30px;
+  left: -10px;
+}
+
+#fileName::before {
+  content: 'File Name: ';
+  font-weight: bold;
+}
+
+#fileName {
+  position: relative;
+  top: 10px;
+  font-family: Arial, sans-serif;
+  font-weight: normal;
 }

@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
   <meta charset="UTF-8">
   <title>Качване на ученически задания</title>
   <link rel="stylesheet" href="/css/student.css">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <!-- Font Awesome за икони по файлов тип -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 
 <body>
   <div class="container">
     <header>
       <h1>Качване на задания</h1>
-      <a href="/teacher" class="teacher-login">Вход за учители</a>
+
+      <a href="/teacher/login" class="btn btn-primary">Вход като учител</a>
     </header>
 
     <section class="upload-section">
       <h2>Качи своето задание</h2>
       <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" id="fileInput" required>
-        <button type="submit" class="upload-btn">Качи</button>
+        <div id="dropZone" class="drop-zone">
+          <input type="file" name="file" id="fileInput" required>
+          <p>Натиснете тук или плъзнете файл, за да го качите</p>
+        </div>
       </form>
       <div id="uploadStatus"></div>
     </section>
@@ -26,7 +32,7 @@
     <section class="materials-section">
       <h2 id="teacherFilesTitle">Материали от учител</h2>
       <div id="teacherCards" class="teacher-cards">
-        <!-- Учителски файлове ще се инжектират тук чрез JS -->
+        <!-- Файловете се инжектират от teachers.js -->
       </div>
     </section>
   </div>
@@ -38,6 +44,8 @@
       FIREBASE_PROJECT_ID: "{{FIREBASE_PROJECT_ID}}"
     };
   </script>
-  <script type="module" src="/js/teachers.js"></script>
+  <script type="module" src="/js/materials.js"></script>
+
 </body>
+
 </html>
