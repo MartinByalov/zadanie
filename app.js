@@ -70,7 +70,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,       // Ако HTTPS - сложи true
+    secure: true,       // Ако HTTPS - сложи true
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000, // 1 ден
     sameSite: 'lax'
