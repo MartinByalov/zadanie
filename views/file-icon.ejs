@@ -1,0 +1,25 @@
+<!-- views/file-icon.ejs -->
+
+<%
+  const name = file.name;
+  const isFolder = file.mimeType === 'application/vnd.google-apps.folder';
+%>
+
+<% if (isFolder) { %>
+  <i class="fas fa-folder fa-2x"></i>
+<% } else { 
+  let ext = name.split('.').pop().toLowerCase();
+  let iconClass = 'fa-file-alt';
+  if (['pdf'].includes(ext)) iconClass = 'fa-file-pdf';
+  else if (['doc', 'docx'].includes(ext)) iconClass = 'fa-file-word';
+  else if (['xls', 'xlsx'].includes(ext)) iconClass = 'fa-file-excel';
+  else if (['ppt', 'pptx'].includes(ext)) iconClass = 'fa-file-powerpoint';
+  else if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) iconClass = 'fa-file-image';
+  else if (['mp4', 'avi'].includes(ext)) iconClass = 'fa-file-video';
+  else if (['mp3', 'wav'].includes(ext)) iconClass = 'fa-file-audio';
+  else if (['zip', 'rar'].includes(ext)) iconClass = 'fa-file-archive';
+%>
+  <i class="fas <%= iconClass %> fa-2x"></i>
+<% } %>
+
+

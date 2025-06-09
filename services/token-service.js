@@ -10,7 +10,7 @@ async function saveRefreshToken(userId, refreshToken) {
   } catch (error) {
     console.error('Error saving token:', error);
   }
-}
+}   
 
 async function getRefreshToken(userId) {
   const doc = await db.collection('tokens').doc(userId).get();
@@ -21,7 +21,7 @@ async function getRefreshToken(userId) {
   const data = doc.data();
   console.log(`Refresh token fetched from Firestore for user ${userId}:`, data.refreshToken);
   return data.refreshToken;
-}
+} 
 
 module.exports = {
   saveRefreshToken,

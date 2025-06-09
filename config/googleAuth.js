@@ -19,7 +19,7 @@ class AuthInitializer {
       this._initializeTeacherAuth();
       this._initializeStudentAuth();
       this._loadRefreshToken();
-      this._initializeDriveApis();
+      this._initializeDriveApis(); 
       return this; // Връщаме инстанцията за допълнителни проверки
     } catch (error) {
       console.error('Initialization error:', error);

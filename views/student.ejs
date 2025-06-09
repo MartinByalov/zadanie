@@ -5,8 +5,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Учебни материали и качване на задания</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/css/student.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
 </head>
 
@@ -14,75 +16,51 @@
     <div class="container">
         <header>
             <h1>Учебни материали</h1>
-            <a href="/teacher/login" class="teacher-login">Вход за учители</a>
-
+         <a href="/teacher/login" class="teacher-login" target="_blank" rel="noopener noreferrer">Вход за учители</a>
         </header>
+        <h2>Избери учител/предмет</h2>
+        <select id="teacherSelect" name="teacherEmail" required>
+            <% teachers.forEach(t=> { %>
+                <option value="<%= t.email %>" data-name="<%= t.name %>" <%=t.email===selectedTeacher.email ? 'selected'
+                    : '' %>>
+                    <pre><code class="language-ejs"><%= t.name %> (<%= t.subject %>)</code></pre>
+                </option>
+                <% }) %>
+        </select>
 
-        <section class="upload-section">
-            <select id="teacherSelect" name="teacherEmail" required
-                style="margin-top: 15px; width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
-                <% teachers.forEach(t=> { %>
-                    <option value="<%= t.email %>" data-name="<%= t.name %>" <%=t.email===selectedTeacher.email
-                        ? 'selected' : '' %>>
-                        <%= t.name %> (<%= t.email %>)
-                    </option>
-                    <% }) %>
-            </select>
-            
-            <form action="/upload" method="post" enctype="multipart/form-data" class="form">
-                <input name="file" id="entry_value" type="file" onchange="getFileName()">
-                <div>
-                    <img src="/images/upload.png" alt="upload" width="7%" class="mx-2">
-                    Качи своето задание
-                   <label for="entry_value" class="btn bg-color-dblue btn-primary px-4 py-3" style="cursor:pointer;">Browse</label>
-                </div>
-            </form>
-           
-        </section>
-        <section class="materials-section">
-            <h2 id="teacherFilesTitle">Файлове от учител: <%= selectedTeacher.name %>
-            </h2>
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data" class="form">
+            <input name="file" id="entry_value" type="file" style="display: none;">
+            <input type="hidden" name="teacherEmail" id="hiddenTeacherEmail">
+            <input type="hidden" name="uploadFolderId" id="hiddenUploadFolderId">
+            <div>
+                <img src="/images/upload.png" alt="upload" width="7%" class="mx-2">
+                Качи своето задание:
+                <span id="fileName" style="font-weight: bold;"></span>
+                <label for="entry_value" class="btn bg-color-dblue btn-primary px-4 py-3" style="cursor:pointer;">Избери
+                    файл</label>
+            </div>
+        </form>
+
+        <h2 id="teacherFilesTitle">Учебни материали</h2>
+        <div id="folderBreadcrumbs" class="breadcrumbs"></div>
+
+        <section class="panel teacher-files-panel">
             <div id="teacherFilesContainer" class="file-grid">
-                <% if (teacherFiles.length> 0) { %>
-                    <% teacherFiles.forEach(file=> {
-                        const ext = file.name.split('.').pop().toLowerCase();
-                        let iconClass = 'fa-file-alt';
-
-                        switch (ext) {
-                        case 'pdf': iconClass = 'fa-file-pdf'; break;
-                        case 'doc':
-                        case 'docx': iconClass = 'fa-file-word'; break;
-                        case 'xls':
-                        case 'xlsx': iconClass = 'fa-file-excel'; break;
-                        case 'ppt':
-                        case 'pptx': iconClass = 'fa-file-powerpoint'; break;
-                        case 'jpg':
-                        case 'jpeg':
-                        case 'png':
-                        case 'gif': iconClass = 'fa-file-image'; break;
-                        case 'mp4':
-                        case 'avi': iconClass = 'fa-file-video'; break;
-                        case 'mp3':
-                        case 'wav': iconClass = 'fa-file-audio'; break;
-                        case 'zip':
-                        case 'rar': iconClass = 'fa-file-archive'; break;
-                        }
-                        %>
-                        <div class="file-card">
-                            <div class="file-icon"><i class="fas <%= iconClass %> fa-2x"></i></div>
-                            <div class="file-name">
-                                <%= file.name %>
-                            </div>
-                            <a href="<%= file.webViewLink %>" target="_blank">Отвори</a>
-                        </div>
-                        <% }) %>
-                            <% } else { %>
-                                <div>Няма файлове за избрания учител.</div>
-                                <% } %>
             </div>
         </section>
     </div>
 
+    <script>
+        const selectedTeacherJsonString = `<%- JSON.stringify(selectedTeacher).replace(/</g, '\\u003c').replace(/>/g, '\\u003e') %>`;
+        const teachersJsonString = `<%- JSON.stringify(teachers).replace(/</g, '\\u003c').replace(/>/g, '\\u003e') %>`;
+
+        window.initialTeacherData = {
+            selectedTeacher: JSON.parse(selectedTeacherJsonString),
+            initialDisplayFolderId: '<%= initialDisplayFolderId %>',
+            initialUploadFolderId: '<%= initialUploadFolderId %>',
+            teachers: JSON.parse(teachersJsonString)
+        };
+    </script>
     <script src="/js/materials.js"></script>
 </body>
 
